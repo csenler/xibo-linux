@@ -5,6 +5,8 @@ add_executable(${PROJECT_NAME}
     MainWindowController.cpp
     MainWindowController.hpp
     Resources.hpp
+    Bypass.cpp
+    Bypass.hpp
 )
 
 target_link_libraries(${PROJECT_NAME}

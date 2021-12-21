@@ -17,6 +17,7 @@ target_link_libraries(${PROJECT_NAME}
     Boost::date_time
     ${GLIBMM_LINK_LIBRARIES}
     ${DATE_TZ_LINK_LIBRARY}
+    -lcurl
 )
 
 target_include_directories(${PROJECT_NAME}
