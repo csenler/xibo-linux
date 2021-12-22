@@ -19,7 +19,7 @@ void signalStacktraceHandler(int signum)
     raise(signum);
 }
 
-int main(int /*argc*/, char** /*argv*/)
+int main(int argc, char** argv)
 {
     std::cout << AppConfig::version() << std::endl;
 
@@ -29,6 +29,14 @@ int main(int /*argc*/, char** /*argv*/)
 
     try
     {
+        // !!!cagri!!! ------------------------
+        if (argc > 1)
+        {
+            std::cout << "[DEBUG] parameter number : " << std::to_string(argc) << std::endl;
+            XiboApp::setArguments(argc, argv);
+        }
+        // ------------------------------------
+
         auto&& app = XiboApp::create("org.gtkmm.xibo");
 
         return app.run();

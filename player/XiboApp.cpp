@@ -28,6 +28,10 @@
 #include "common/storage/FileCacheImpl.hpp"
 #include "common/system/System.hpp"
 
+// !!!cagri!!!
+#include <iostream>
+#include <options/Bypass.hpp>
+
 static std::unique_ptr<XiboApp> g_app;
 
 XiboApp& xiboApp()
@@ -41,6 +45,29 @@ XiboApp& XiboApp::create(const std::string& name)
 
     g_app = std::unique_ptr<XiboApp>(new XiboApp(name));
     return *g_app;
+}
+
+void XiboApp::setArguments(int argc, char** argv)
+{
+    std::cout << "[DEBUG] XiboApp::setArgument";
+    // should call xibo-options here with bypass
+    Bypass bypass;
+    bypass.initialize();
+    std::cout << "num of parameters : " << std::to_string(argc) << std::endl;
+    int retVal = bypass.initWithArguments(argc, argv);
+    if (retVal == 1)
+    {
+        std::cout << "[DEBUG] options -> SUCCESS" << std::endl;
+    }
+    else if (retVal == 0)
+    {
+        std::cout << "[DEBUG] options -> empty parameters" << std::endl;
+    }
+    else if (retVal == -1)
+    {
+        std::cout << "[DEBUG] options -> wrong number of parameters" << std::endl;
+    }
+
 }
 
 XiboApp::XiboApp(const std::string& name) :
@@ -126,7 +153,12 @@ int XiboApp::run()
     scheduler_->layoutUpdated().connect(
         [this]() { collectionInterval_->setCurrentLayoutId(scheduler_->currentLayoutId()); });
 
+
+    std::cout << "[DEBUG] 111" << std::endl;
+    std::cout << "[DEBUG] XiboApp -> AppConfig::schedulePath() : " << AppConfig::schedulePath().string() << std::endl;
     scheduler_->reloadSchedule(LayoutSchedule::fromFile(AppConfig::schedulePath()));
+    std::cout << "[DEBUG] 222" << std::endl;
+
     scheduler_->scheduleUpdated().connect(
         [](const LayoutSchedule& schedule) { schedule.toFile(AppConfig::schedulePath()); });
 
@@ -178,6 +210,9 @@ std::unique_ptr<LayoutsManager> XiboApp::createLayoutManager()
         {
             mainWindow_->setMainLayout(layout);
             layout->showAll();
+            // !!!cagri!!!
+//            std::cout << "[DEBUG] XiboApp::createLayoutManager -> trying default layout" << std::endl;
+//            mainWindow_->showSplashScreen();
         }
         else
         {

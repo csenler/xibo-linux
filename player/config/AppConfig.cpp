@@ -59,6 +59,8 @@ FilePath AppConfig::configDirectory()
     return FilePath{getenv("SNAP_USER_COMMON")};
 #elif defined(APPIMAGE_ENABLED)
     return FilePath{getenv("XDG_CONFIG_HOME")};
+#elif defined(CUSTOM_CONFIG_DIR) // !!!cagri!!!
+    return FilePath{std::filesystem::path("/home/svrn/snap/savron-player/common")};
 #else
     return execDirectory();
 #endif

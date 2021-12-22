@@ -38,6 +38,7 @@ elseif("${APP_ENV}" STREQUAL "AppImage")
     add_compile_definitions(APPIMAGE_ENABLED)
 else()
     message("Build will be done for custom environment")
+#    add_compile_definitions(CUSTOM_CONFIG_DIR) # !!!cagri!!!
 endif()
 
 option(GTK_UI "Use GTK library for UI" ON)
@@ -63,6 +64,7 @@ target_link_libraries(${PROJECT_NAME}
     system
     dl
     backtrace
+    OPTIONS_BYPASS # !!!cagri!!!
 )
 
 if(SNAP_BUILD)

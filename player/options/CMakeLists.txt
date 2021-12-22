@@ -9,6 +9,13 @@ add_executable(${PROJECT_NAME}
     Bypass.hpp
 )
 
+# !!!cagri!!! -------------------------
+add_library(OPTIONS_BYPASS
+    Bypass.cpp
+    Bypass.hpp
+)
+# -------------------------------------
+
 target_link_libraries(${PROJECT_NAME}
     cms
     config

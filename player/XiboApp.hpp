@@ -35,6 +35,7 @@ class XiboApp : boost::noncopyable
 {
 public:
     static XiboApp& create(const std::string& name);
+    static void setArguments(int argc, char** argv); // !!!cagri!!!
     int run();
 
     static Uri localAddress();

@@ -10,6 +10,8 @@
 
 #include <boost/signals2/signal.hpp>
 
+#include <iostream> // !!!cagri!!!
+
 using SignalScheduleUpdated = boost::signals2::signal<void(const LayoutSchedule&)>;
 using SignalLayoutsUpdated = boost::signals2::signal<void()>;
 

@@ -3,6 +3,8 @@
 void Bypass::initialize()
 {
     std::cout << "bypass::initialize" << std::endl;
+    std::cout << "[DEBUG] cmSettingsPath : " << AppConfig::cmsSettingsPath().string() << std::endl;
+    std::cout << "[DEBUG] playerSettings_ : " << AppConfig::playerSettingsPath().string() << std::endl;
     cmsSettings_.fromFile(AppConfig::cmsSettingsPath());
     playerSettings_.fromFile(AppConfig::playerSettingsPath());
 }

@@ -21,6 +21,9 @@ void Scheduler::reloadQueue()
     assert(schedule_);
 
     auto current = currentLayoutId();
+
+    std::cout << "[DEBUG] Scheduler::reloadQueue, currentLayoutId : " << current << std::endl;
+
     auto overlays = overlayLayouts();
 
     regularQueue_ = regularQueueFrom(schedule_.value());
@@ -74,6 +77,7 @@ void Scheduler::updateCurrentLayout(LayoutId id)
     }
     else
     {
+        std::cout << "[DEBUG] Scheduler::updateCurrentLayout, layoutId : " << id << " not in queue" << std::endl;
         layoutUpdated_();
     }
 }
