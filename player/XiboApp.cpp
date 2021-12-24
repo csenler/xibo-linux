@@ -81,18 +81,18 @@ XiboApp::XiboApp(const std::string& name) :
     webserver_(std::make_shared<LocalWebServer>())
 {
     if (!FileSystem::exists(AppConfig::cmsSettingsPath()))
-        throw PlayerRuntimeError{"XiboApp", "Update CMS settings using player options app"};
-
-    std::cout << "[DEBUG] XiboApp -> cmsSettingsPath : " << AppConfig::cmsSettingsPath() << std::endl;
-    std::cout << "[DEBUG] XiboApp -> playerSettingsPath : " << AppConfig::playerSettingsPath() << std::endl;
-    std::cout << "[DEBUG] XiboApp -> cachePath : " << AppConfig::cachePath() << std::endl;
-    std::cout << "[DEBUG] XiboApp -> resourcesPath in cmsSettings : " << cmsSettings_.resourcesPath() << std::endl;
+        throw PlayerRuntimeError{"XiboApp", "Update CMS settings using player options app"};    
 
     playerSettings_.logLevel().valueChanged().connect([](const std::string& logLevel) { Log::setLevel(logLevel); });
 
     cmsSettings_.fromFile(AppConfig::cmsSettingsPath());
     playerSettings_.fromFile(AppConfig::playerSettingsPath());
     fileCache_->loadFrom(AppConfig::cachePath());
+
+    std::cout << "[DEBUG] XiboApp -> cmsSettingsPath : " << AppConfig::cmsSettingsPath() << std::endl;
+    std::cout << "[DEBUG] XiboApp -> playerSettingsPath : " << AppConfig::playerSettingsPath() << std::endl;
+    std::cout << "[DEBUG] XiboApp -> cachePath : " << AppConfig::cachePath() << std::endl;
+    std::cout << "[DEBUG] XiboApp -> resourcesPath in cmsSettings : " << cmsSettings_.resourcesPath() << std::endl;
 
     System::preventSleep();
     AppConfig::resourceDirectory(cmsSettings_.resourcesPath());

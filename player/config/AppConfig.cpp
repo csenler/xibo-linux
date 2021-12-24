@@ -65,7 +65,7 @@ FilePath AppConfig::configDirectory()
     return FilePath{getenv("XDG_CONFIG_HOME")};
 #elif defined(CUSTOM_CONFIG_DIR) // !!!cagri!!!
 //    return FilePath{std::filesystem::path("/home/svrn/snap/savron-player/common")};
-    std::cout << "XIBO_CONFIG_PATH : " << getenv("XIBO_CONFIG_PATH") << std::endl;
+    std::cout << "AppConfig::configDirectory -> XIBO_CONFIG_PATH : " << getenv("XIBO_CONFIG_PATH") << std::endl;
 //    return FilePath{"/home/svrn/xibo_config"}; // WORKAROUND IN CASE ENV NOT SET
     return FilePath{getenv("XIBO_CONFIG_PATH")};
 #else
@@ -143,6 +143,7 @@ FilePath AppConfig::execDirectory()
     char result[PATH_MAX];
     ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
     assert(count != -1);
+    std::cout << "AppCofig-> execDirectory : " << std::filesystem::path(std::string(result, static_cast<size_t>(count))).parent_path().string() << std::endl;
     return FilePath{std::filesystem::path(std::string(result, static_cast<size_t>(count))).parent_path()};
 #endif
 }

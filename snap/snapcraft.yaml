@@ -36,7 +36,7 @@ apps:
     extensions: [gnome-3-28]
 
   options:
-    command: bin/xibo-options
+    command: bin/snap_run.sh xibo-options
     plugs: [gsettings, network, home, savron-player-config]
     slots: [dbus-daemon]
     extensions: [gnome-3-28]
@@ -284,4 +284,4 @@ plugs:
   savron-player-config:
     interface: personal-files
     read:
-    - $HOME/xibo_config
+    - /home/svrn/xibo_config
