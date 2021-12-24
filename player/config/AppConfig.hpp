@@ -2,6 +2,9 @@
 
 #include "common/fs/FilePath.hpp"
 
+//#include "config/CmsSettings.hpp"
+#include <iostream>
+
 class AppConfig
 {
 public:
@@ -20,6 +23,11 @@ public:
     {
         return FilePath{getenv("SNAP_USER_DATA")};
     }
+#elif defined(CUSTOM_CONFIG_DIR) // !!!cagri!!!
+    static FilePath oldConfigDirectory()
+    {
+       return FilePath{getenv("XIBO_CONFIG_PATH")};
+    }
 #endif
 
     static FilePath publicKeyPath();
@@ -36,6 +44,9 @@ public:
 
     static std::string playerBinary();
     static std::string optionsBinary();
+
+    // !!!cagri!!!
+    static void setupNewConfigDir();
 
 private:
     static FilePath resourceDirectory_;

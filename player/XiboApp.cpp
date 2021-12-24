@@ -58,14 +58,17 @@ void XiboApp::setArguments(int argc, char** argv)
     if (retVal == 1)
     {
         std::cout << "[DEBUG] options -> SUCCESS" << std::endl;
+//        throw PlayerRuntimeError{ "[DEBUG] options -> SUCCESS"};
     }
     else if (retVal == 0)
     {
         std::cout << "[DEBUG] options -> empty parameters" << std::endl;
+//        throw PlayerRuntimeError{ "[DEBUG] options -> empty parameters"};
     }
     else if (retVal == -1)
     {
         std::cout << "[DEBUG] options -> wrong number of parameters" << std::endl;
+//        throw PlayerRuntimeError{ "[DEBUG] options -> wrong number of parameters"};
     }
 
 }
@@ -79,6 +82,11 @@ XiboApp::XiboApp(const std::string& name) :
 {
     if (!FileSystem::exists(AppConfig::cmsSettingsPath()))
         throw PlayerRuntimeError{"XiboApp", "Update CMS settings using player options app"};
+
+    std::cout << "[DEBUG] XiboApp -> cmsSettingsPath : " << AppConfig::cmsSettingsPath() << std::endl;
+    std::cout << "[DEBUG] XiboApp -> playerSettingsPath : " << AppConfig::playerSettingsPath() << std::endl;
+    std::cout << "[DEBUG] XiboApp -> cachePath : " << AppConfig::cachePath() << std::endl;
+    std::cout << "[DEBUG] XiboApp -> resourcesPath in cmsSettings : " << cmsSettings_.resourcesPath() << std::endl;
 
     playerSettings_.logLevel().valueChanged().connect([](const std::string& logLevel) { Log::setLevel(logLevel); });
 

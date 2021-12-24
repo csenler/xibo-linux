@@ -29,10 +29,12 @@ int main(int argc, char** argv)
 
     try
     {
+        std::cout << "argc : " << std::to_string(argc) << std::endl;
         // !!!cagri!!! ------------------------
         if (argc > 1)
         {
             std::cout << "[DEBUG] parameter number : " << std::to_string(argc) << std::endl;
+//            throw PlayerRuntimeError{ ("[DEBUG] parameter number : " + std::to_string(argc))};
             XiboApp::setArguments(argc, argv);
         }
         // ------------------------------------

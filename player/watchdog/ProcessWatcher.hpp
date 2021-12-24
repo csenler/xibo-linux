@@ -10,6 +10,9 @@ public:
     ProcessWatcher(const std::string& processBin, bool disableRestart);
     void run();
 
+    // !!!cagri!!!
+    void runWithArgs(std::string argString);
+
 private:
     static void signalHandler(int signum);
     void setupSignalHandler();

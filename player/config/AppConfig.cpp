@@ -12,6 +12,8 @@
 #include <linux/limits.h>
 #include <unistd.h>
 
+#include <iostream>
+
 FilePath AppConfig::resourceDirectory_;
 
 std::string AppConfig::version()
@@ -50,17 +52,22 @@ void AppConfig::resourceDirectory(const FilePath& directory)
         throw PlayerRuntimeError{
             "AppConfig", "Resource directory doesn't exist. Create or use exsiting one in the player options app."};
 
+    std::cout << "AppConfig::resourceDirectory : " << directory.string() << std::endl;
     resourceDirectory_ = directory;
 }
 
 FilePath AppConfig::configDirectory()
 {
 #if defined(SNAP_ENABLED)
-    return FilePath{getenv("SNAP_USER_COMMON")};
+//    return FilePath{getenv("SNAP_USER_COMMON")};
+    return FilePath{getenv("XIBO_CONFIG_PATH")};
 #elif defined(APPIMAGE_ENABLED)
     return FilePath{getenv("XDG_CONFIG_HOME")};
 #elif defined(CUSTOM_CONFIG_DIR) // !!!cagri!!!
-    return FilePath{std::filesystem::path("/home/svrn/snap/savron-player/common")};
+//    return FilePath{std::filesystem::path("/home/svrn/snap/savron-player/common")};
+    std::cout << "XIBO_CONFIG_PATH : " << getenv("XIBO_CONFIG_PATH") << std::endl;
+//    return FilePath{"/home/svrn/xibo_config"}; // WORKAROUND IN CASE ENV NOT SET
+    return FilePath{getenv("XIBO_CONFIG_PATH")};
 #else
     return execDirectory();
 #endif
@@ -107,6 +114,9 @@ FilePath AppConfig::additionalResourcesDirectory()
     return FilePath{getenv("SNAP")} / "share" / "xibo-player";
 #elif defined(APPIMAGE_ENABLED)
     return FilePath{getenv("APPDIR")} / "usr" / "share" / "xibo-player";
+#elif defined(CUSTOM_CONFIG_DIR) // !!!cagri!!!
+    std::cout << "additionalResourcesDirectory : " << configDirectory() / "resources" << std::endl;
+    return configDirectory() / "resources";
 #else
     return execDirectory();
 #endif
@@ -145,4 +155,40 @@ std::string AppConfig::playerBinary()
 std::string AppConfig::optionsBinary()
 {
     return (execDirectory() / "xibo-options").string();
+}
+
+// !!!cagri!!!
+void AppConfig::setupNewConfigDir()
+{
+//#ifdef CUSTOM_CONFIG_DIR
+//    try
+//    {
+//        const std::string CmsSettingsFile = "cmsSettings.xml";
+//        const std::string PlayerSettingsFile = "playerSettings.xml";
+//        const std::string PrivateKeyFile = "id_rsa";
+//        const std::string PublicKeyFile = "id_rsa.pub";
+//        const std::string ResourcesDir = "resources";
+//        if (FileSystem::exists(AppConfig::oldConfigDirectory() / CmsSettingsFile))
+//        {
+//            CmsSettings settings;
+//            settings.fromFile(AppConfig::oldConfigDirectory() / CmsSettingsFile);
+
+//            std::vector<std::string> filesToMove{CmsSettingsFile, PlayerSettingsFile, PrivateKeyFile, PublicKeyFile};
+//            for (auto&& file : filesToMove)
+//            {
+//                FileSystem::move(AppConfig::oldConfigDirectory() / file, AppConfig::configDirectory() / file);
+//            }
+
+//            if (settings.resourcesPath() == AppConfig::oldConfigDirectory() / ResourcesDir)
+//            {
+//                settings.resourcesPath().setValue(AppConfig::configDirectory() / ResourcesDir);
+//                settings.saveTo(AppConfig::cmsSettingsPath());
+//            }
+//        }
+//    }
+//    catch (std::exception& e)
+//    {
+//        std::cout << "Error during setting up new config directory: " << e.what() << std::endl;
+//    }
+//#endif
 }

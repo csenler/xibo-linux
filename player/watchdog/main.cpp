@@ -34,6 +34,7 @@ void setupNewConfigDir()
                 settings.saveTo(AppConfig::cmsSettingsPath());
             }
         }
+        std::cout << "oldConfigDIR : " << AppConfig::oldConfigDirectory() << std::endl;
     }
     catch (std::exception& e)
     {
@@ -41,6 +42,22 @@ void setupNewConfigDir()
     }
 #endif
 }
+
+// !!!cagri!!! --------------------
+void on_cms(std::string cms)
+{
+  std::cout << "On cms: " << cms << '\n';
+}
+void on_key(std::string key)
+{
+  std::cout << "On key: " << key << '\n';
+}
+void on_lib(std::string lib)
+{
+  std::cout << "On lib: " << lib << '\n';
+}
+// ---------------------------------
+
 int main(int argc, char** argv)
 {
     setupNewConfigDir();
@@ -50,6 +67,15 @@ int main(int argc, char** argv)
         boost::program_options::options_description desc{"Options"};
         desc.add_options()("disable-restart", "Don't restart player (disable watchdog)");
         desc.add_options()("config-app", "Run config application");
+
+        // !!!cagri!!! ---------------------------------------
+        desc.add_options()("cms", boost::program_options::value<std::string>()->notifier(on_cms), "cms");
+        desc.add_options()("key", boost::program_options::value<std::string>()->notifier(on_key), "key");
+        desc.add_options()("lib", boost::program_options::value<std::string>()->notifier(on_lib), "lib");
+        boost::program_options::parsed_options parsed_options = boost::program_options::command_line_parser(argc, argv)
+              .options(desc)
+              .run();
+        // ---------------------------------------------------
 
         boost::program_options::variables_map vm;
         store(parse_command_line(argc, argv, desc), vm);
@@ -63,16 +89,50 @@ int main(int argc, char** argv)
             throw PlayerRuntimeError{"XiboApp", "Config directory is not correctly setup in AppImage env"};
 #endif
 
-        if (FileSystem::exists(AppConfig::cmsSettingsPath()) && vm.count("config-app") == 0)
+//        if (FileSystem::exists(AppConfig::cmsSettingsPath()) && vm.count("config-app") == 0)
+//        {
+//            ProcessWatcher playerWatcher{AppConfig::playerBinary(), vm.count("disable-restart") > 0};
+//            playerWatcher.run();
+//        }
+//        else
+//        {
+//            boost::process::child optionsBin{AppConfig::optionsBinary()};
+//            optionsBin.wait();
+//        }
+
+
+        if (vm.count("cms") > 0 && vm.count("key") > 0 && vm.count("lib") > 0 && vm.count("config-app") == 0)
         {
+            std::cout << "watchdog -> bypass condition" << std::endl;
+
+            std::string argString = "";
+            std::cout << "vm size : " << vm.size() << std::endl;
+            for (const auto& it : vm)
+            {
+                if (it.first == "cms" || it.first == "key" || it.first == "lib")
+                {
+                    argString.append("--" + it.first + " " + it.second.as<std::string>() + " ");
+                }
+            }
+            std::cout << "arguments string : " << argString << std::endl;
+
+            ProcessWatcher playerWatcher{AppConfig::playerBinary(), vm.count("disable-restart") > 0};
+//            playerWatcher.run();
+            playerWatcher.runWithArgs(argString);
+        }
+        else if (FileSystem::exists(AppConfig::cmsSettingsPath()) && vm.count("config-app") == 0)
+        {
+            std::cout << "watchdog -> original start" << std::endl;
             ProcessWatcher playerWatcher{AppConfig::playerBinary(), vm.count("disable-restart") > 0};
             playerWatcher.run();
         }
         else
         {
+            std::cout << "watchdog -> start with xibo-options" << std::endl;
             boost::process::child optionsBin{AppConfig::optionsBinary()};
             optionsBin.wait();
         }
+
     }
     catch (std::exception& e)
     {
