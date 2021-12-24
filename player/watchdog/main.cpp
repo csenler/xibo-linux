@@ -56,6 +56,10 @@ void on_lib(std::string lib)
 {
   std::cout << "On lib: " << lib << '\n';
 }
+void on_displayID(std::string dID)
+{
+  std::cout << "On displayID: " << dID << '\n';
+}
 // ---------------------------------
 
 int main(int argc, char** argv)
@@ -72,6 +76,7 @@ int main(int argc, char** argv)
         desc.add_options()("cms", boost::program_options::value<std::string>()->notifier(on_cms), "cms");
         desc.add_options()("key", boost::program_options::value<std::string>()->notifier(on_key), "key");
         desc.add_options()("lib", boost::program_options::value<std::string>()->notifier(on_lib), "lib");
+        desc.add_options()("dID", boost::program_options::value<std::string>()->notifier(on_displayID), "dID");
         boost::program_options::parsed_options parsed_options = boost::program_options::command_line_parser(argc, argv)
               .options(desc)
               .run();
@@ -100,6 +105,8 @@ int main(int argc, char** argv)
 //            optionsBin.wait();
 //        }
 
+        std::cout << "watchdog -> XIBO_CONFIG_PATH : " << getenv("XIBO_CONFIG_PATH") << std::endl;
+
 
         if (vm.count("cms") > 0 && vm.count("key") > 0 && vm.count("lib") > 0 && vm.count("config-app") == 0)
         {
@@ -109,7 +116,8 @@ int main(int argc, char** argv)
             std::cout << "vm size : " << vm.size() << std::endl;
             for (const auto& it : vm)
             {
-                if (it.first == "cms" || it.first == "key" || it.first == "lib")
+                if (it.first == "cms" || it.first == "key" || it.first == "lib"
+                        || (vm.count("dID") > 0 && it.first == "dID"))
                 {
                     argString.append("--" + it.first + " " + it.second.as<std::string>() + " ");
                 }

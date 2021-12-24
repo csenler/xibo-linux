@@ -15,11 +15,13 @@ int Bypass::initWithArguments(int argc, char* argv[])
     int nRet = 1;
     int i = 1;
 
-    if (argc != 7)
-    {
-        nRet = -1;
-        return nRet;
-    }
+    bool displayIdFlag = false;
+
+//    if (argc != 7)
+//    {
+//        nRet = -1;
+//        return nRet;
+//    }
 
     while (i < argc)
     {
@@ -47,14 +49,23 @@ int Bypass::initWithArguments(int argc, char* argv[])
         {
             resourcePath = std::string(argv[i + 1]);
         }
+        else if (strCurArg == "--dID")
+        {
+            displayId  = std::string(argv[i + 1]);
+            displayIdFlag = true;
+        }
 
         i++;
     }
 
     if (nRet == 1)
     {
-        auto keyHash = static_cast<Md5Hash>(System::hardwareKey());
-        displayId = std::string(keyHash);
+        if (!displayIdFlag)
+        {
+            auto keyHash = static_cast<Md5Hash>(System::hardwareKey());
+            displayId = std::string(keyHash);
+        }
+
         std::cout << "displayID : " << displayId << std::endl;
 
         std::cout << "cms adress : " << cmsAddress << std::endl;
