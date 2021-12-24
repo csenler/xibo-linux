@@ -36,3 +36,18 @@ void ProcessWatcher::setupSignalHandler()
     action.sa_handler = signalHandler;
     sigaction(SIGTERM, &action, nullptr);
 }
+
+// !!!cagri!!!
+void ProcessWatcher::runWithArgs(std::string argString)
+{
+    while (true)
+    {
+        boost::process::child child{processPath_ + " " + argString};
+        currentChildPid = child.id();
+        child.wait();
+        std::cerr << "Player exited with code " << child.exit_code() << std::endl;
+
+        if (terminate || disableRestart_) break;
+        sleep(3);
+    }
+}

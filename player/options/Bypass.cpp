@@ -35,15 +35,15 @@ int Bypass::initWithArguments(int argc, char* argv[])
             break;
         }
 
-        if (strCurArg == "-cms")
+        if (strCurArg == "--cms")
         {
             cmsAddress = std::string(argv[i + 1]);
         }
-        else if (strCurArg == "-key")
+        else if (strCurArg == "--key")
         {
             key = std::string(argv[i + 1]);
         }
-        else if (strCurArg == "-lib")
+        else if (strCurArg == "--lib")
         {
             resourcePath = std::string(argv[i + 1]);
         }

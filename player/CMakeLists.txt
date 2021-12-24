@@ -16,6 +16,7 @@ set(CMAKE_TESTS_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 add_compile_options(
     -pthread -Wall -Wno-parentheses -Wno-cast-function-type -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings
+    -Wzero-as-null-pointer-constant
     "$<$<CONFIG:RELEASE>:-O2>"
     "$<$<CONFIG:DEBUG>:-g3;-O0>"
 )
@@ -38,7 +39,7 @@ elseif("${APP_ENV}" STREQUAL "AppImage")
     add_compile_definitions(APPIMAGE_ENABLED)
 else()
     message("Build will be done for custom environment")
-#    add_compile_definitions(CUSTOM_CONFIG_DIR) # !!!cagri!!!
+    add_compile_definitions(CUSTOM_CONFIG_DIR) # !!!cagri!!!
 endif()
 
 option(GTK_UI "Use GTK library for UI" ON)

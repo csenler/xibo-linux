@@ -1,10 +1,17 @@
-name: xibo-player
+name: savron-player
 base: core18
 version: 1.8-R6
-summary: Xibo Linux Player
-description: Xibo for Linux Digital Signage Player
+summary: Savron Linux Player
+description: Savron for Linux Digital Signage Player
 grade: stable
 confinement: strict
+# !!!cagri!! -------------
+assumes:
+- command-chain
+- snapd2.43
+environment:
+  SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
+# ---------------------------
 
 architectures:
   - build-on: amd64
@@ -16,9 +23,9 @@ slots:
     name: org.gtkmm.xibo # adjust accordingly
 
 apps:
-  xibo-player:
+  savron-player:
     command: bin/snap_run.sh xibo-watchdog
-    plugs: [gsettings, network, home, audio-playback, screen-inhibit-control, framebuffer, opengl]
+    plugs: [gsettings, network, home, audio-playback, screen-inhibit-control, framebuffer, opengl, savron-player-config]
     slots: [dbus-daemon]
     extensions: [gnome-3-28]
 
@@ -30,7 +37,7 @@ apps:
 
   options:
     command: bin/xibo-options
-    plugs: [gsettings, network, home]
+    plugs: [gsettings, network, home, savron-player-config]
     slots: [dbus-daemon]
     extensions: [gnome-3-28]
 
@@ -239,3 +246,42 @@ parts:
       - libgpm2 # gstreamer warning
       - libslang2 # gstreamer warning
     after: [zmq, boost, spdlog, gtest, gstreamer, date-tz, sqlite-orm] 
+
+# !!!cagri!!! ----------------------------------------------------
+hooks:
+  configure:
+    command-chain:
+    - snap/command-chain/hooks-configure-desktop
+    plugs:
+    - desktop
+layout:
+  /usr/bin/gjs:
+    symlink: $SNAP/gnome-platform/usr/bin/gjs
+  /usr/lib/x86_64-linux-gnu/webkit2gtk-4.0:
+    bind: $SNAP/gnome-platform/usr/lib/x86_64-linux-gnu/webkit2gtk-4.0
+  /usr/share/xml/iso-codes:
+    bind: $SNAP/gnome-platform/usr/share/xml/iso-codes
+plugs:
+  desktop:
+    mount-host-font-cache: false
+  gnome-3-28-1804:
+    interface: content
+    target: $SNAP/gnome-platform
+    default-provider: gnome-3-28-1804
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/data-dir/themes
+    default-provider: gtk-common-themes
+  icon-themes:
+    interface: content
+    target: $SNAP/data-dir/icons
+    default-provider: gtk-common-themes
+  sound-themes:
+    interface: content
+    target: $SNAP/data-dir/sounds
+    default-provider: gtk-common-themes
+# !!!cagri!!!
+  savron-player-config:
+    interface: personal-files
+    read:
+    - $HOME/xibo_config
